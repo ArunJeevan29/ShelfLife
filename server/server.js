@@ -7,6 +7,8 @@ const connectDB = require("./config/db");
 const errorMiddleware = require("./middleware/errorMiddleware");
 const loggerMiddleware = require("./middleware/loggerMiddleware");
 
+const authRoutes = require("./routes/authRoutes");
+
 const app = express();
 
 app.use(
@@ -17,6 +19,8 @@ app.use(
 app.use(helmet());
 app.use(express.json());
 app.use(loggerMiddleware);
+
+app.use("/api/auth", authRoutes);
 
 app.use(errorMiddleware);
 
