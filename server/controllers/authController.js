@@ -3,6 +3,7 @@ const RefreshSession = require("../models/RefreshSession");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const { access } = require("fs");
 
 const registerUser = async (req, res, next) => {
   try {
@@ -80,7 +81,6 @@ const loginUser = async (req, res, next) => {
     const accessToken = jwt.sign(
       {
         id: user._id,
-        role: user.role,
       },
       process.env.JWT_SECRET,
       {
@@ -90,7 +90,7 @@ const loginUser = async (req, res, next) => {
 
     const refreshToken = jwt.sign(
       {
-        user: user._id,
+        id: user._id,
         tokenId,
       },
       process.env.JWT_REFRESH_SECRET,
@@ -122,4 +122,79 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const refreshAccessToken = async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh token not found" });
+    }
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const { id, tokenId } = decoded;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid Refresh Token",
+      });
+    }
+    if (user.status !== "ACTIVE") {
+      return res.status(403).json({
+        message: "User account is inactive",
+      });
+    }
+    const session = await RefreshSession.findOne({
+      user: id,
+      tokenId,
+      expiresAt: { $gt: new Date() },
+      revoked: false,
+    });
+    if (!session) {
+      return res.status(401).json({ message: "Invalid Refresh Token" });
+    }
+    session.revoked = true;
+    await session.save();
+
+    const newTokenId = crypto.randomBytes(32).toString("hex");
+    const newExpiryDate = new Date();
+    newExpiryDate.setDate(newExpiryDate.getDate() + 7);
+    await RefreshSession.create({
+      user: id,
+      tokenId: newTokenId,
+      expiresAt: newExpiryDate,
+    });
+
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "15m",
+      },
+    );
+
+    const newRefreshToken = jwt.sign(
+      {
+        id,
+        tokenId: newTokenId,
+      },
+      process.env.JWT_REFRESH_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      expires: newExpiryDate,
+    });
+
+    return res.status(200).json({ accessToken });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { registerUser, loginUser, refreshAccessToken };
