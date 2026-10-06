@@ -3,7 +3,6 @@ const RefreshSession = require("../models/RefreshSession");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
-const { access } = require("fs");
 
 const registerUser = async (req, res, next) => {
   try {

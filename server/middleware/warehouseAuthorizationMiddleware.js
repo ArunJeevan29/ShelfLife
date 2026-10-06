@@ -9,7 +9,7 @@ const warehouseAuthorizationMiddleware = (req, res, next) => {
     }
 
     if (["MANAGER", "STAFF"].includes(req.user.role)) {
-      if (req.user.warehouse?.toString() === warehouseId) {
+      if (req.user.warehouseId?.toString() === warehouseId) {
         return next();
       }
     }
