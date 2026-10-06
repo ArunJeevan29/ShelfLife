@@ -30,4 +30,18 @@ const createWarehouse = async (req, res, next) => {
   }
 };
 
-module.exports = { createWarehouse };
+const getWarehouses = async (req, res, next) => {
+  try {
+    const { role, warehouseId } = req.user;
+    let query = {};
+    if (role !== "ADMIN") {
+      query._id = warehouseId;
+    }
+    const warehouses = await Warehouse.find(query);
+    return res.status(200).json(warehouses);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createWarehouse, getWarehouses };

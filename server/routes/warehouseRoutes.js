@@ -9,7 +9,10 @@ const {
 const authMiddleware = require("../middleware/authMiddleware");
 const authorizationMiddleware = require("../middleware/authorizationMiddleware");
 
-const { createWarehouse } = require("../controllers/warehouseController");
+const {
+  createWarehouse,
+  getWarehouses,
+} = require("../controllers/warehouseController");
 
 router.post(
   "/",
@@ -19,5 +22,7 @@ router.post(
   validate,
   createWarehouse,
 );
+
+router.get("/", authMiddleware, getWarehouses);
 
 module.exports = router;
