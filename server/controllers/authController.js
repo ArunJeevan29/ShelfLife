@@ -197,4 +197,38 @@ const refreshAccessToken = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, refreshAccessToken };
+const logoutUser = async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (refreshToken) {
+      try {
+        const decoded = jwt.verify(
+          refreshToken,
+          process.env.JWT_REFRESH_SECRET,
+        );
+        const { id, tokenId } = decoded;
+        await RefreshSession.findOneAndUpdate(
+          {
+            user: id,
+            tokenId,
+            revoked: false,
+          },
+          { revoked: true },
+        );
+      } catch (error) {
+        // Ignore invalid/expired refresh token during logout
+      }
+    }
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+
+    return res.status(200).json({ message: "Logout Successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { registerUser, loginUser, refreshAccessToken, logoutUser };
