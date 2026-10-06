@@ -35,10 +35,23 @@ const createSupplier = async (req, res, next) => {
 const getSuppliers = async (req, res, next) => {
   try {
     const suppliers = await Supplier.find();
-    return res.status(200).json(suppliers);
+    return res.status(200).json({ suppliers });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { createSupplier, getSuppliers };
+const getSupplier = async (req, res, next) => {
+  try {
+    const { supplierId } = req.params;
+    const supplier = await Supplier.findById(supplierId);
+    if (!supplier) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+    return res.status(200).json({ supplier });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createSupplier, getSuppliers, getSupplier };

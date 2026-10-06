@@ -12,6 +12,7 @@ const {
 const {
   createSupplier,
   getSuppliers,
+  getSupplier,
 } = require("../controllers/supplierController");
 
 router.post(
@@ -28,6 +29,13 @@ router.get(
   authMiddleware,
   authorizationMiddleware(["ADMIN"]),
   getSuppliers,
+);
+
+router.get(
+  "/:supplierId",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN"]),
+  getSupplier,
 );
 
 module.exports = router;
