@@ -2,10 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
 
 const connectDB = require("./config/db");
 const errorMiddleware = require("./middleware/errorMiddleware");
 const loggerMiddleware = require("./middleware/loggerMiddleware");
+
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -16,7 +19,10 @@ app.use(
 );
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());
 app.use(loggerMiddleware);
+
+app.use("/api/auth", authRoutes);
 
 app.use(errorMiddleware);
 
