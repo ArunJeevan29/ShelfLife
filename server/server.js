@@ -9,6 +9,7 @@ const errorMiddleware = require("./middleware/errorMiddleware");
 const loggerMiddleware = require("./middleware/loggerMiddleware");
 
 const authRoutes = require("./routes/authRoutes");
+const warehouseRoutes = require("./routes/warehouseRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use(loggerMiddleware);
 
 app.use("/api/auth", authRoutes);
+app.use("/api/warehouses", warehouseRoutes);
 
 app.use(errorMiddleware);
 
