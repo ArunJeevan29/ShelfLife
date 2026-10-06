@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   createWarehouseValidation,
+  updateWarehouseValidation,
   validate,
 } = require("../middleware/validationMiddleware");
 
@@ -14,6 +15,7 @@ const {
   createWarehouse,
   getWarehouses,
   getWarehouse,
+  updateWarehouse,
 } = require("../controllers/warehouseController");
 
 router.post(
@@ -32,6 +34,15 @@ router.get(
   authMiddleware,
   warehouseAuthorizationMiddleware,
   getWarehouse,
+);
+
+router.put(
+  "/:warehouseId",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN"]),
+  updateWarehouseValidation,
+  validate,
+  updateWarehouse,
 );
 
 module.exports = router;

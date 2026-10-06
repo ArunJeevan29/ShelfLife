@@ -58,6 +58,18 @@ const createWarehouseValidation = [
   body("address").trim().notEmpty().withMessage("Address is required"),
 ];
 
+const updateWarehouseValidation = [
+  body("name").trim().notEmpty().withMessage("Name is required"),
+  body("code").trim().notEmpty().withMessage("Code is required"),
+  body("type")
+    .trim()
+    .notEmpty()
+    .withMessage("Type is required")
+    .isIn(["MAIN", "BRANCH"])
+    .withMessage("Invalid Type"),
+  body("address").trim().notEmpty().withMessage("Address is required"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -70,5 +82,6 @@ module.exports = {
   loginValidation,
   registerValidation,
   createWarehouseValidation,
+  updateWarehouseValidation,
   validate,
 };

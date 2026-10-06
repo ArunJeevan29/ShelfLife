@@ -57,4 +57,48 @@ const getWarehouse = async (req, res, next) => {
   }
 };
 
-module.exports = { createWarehouse, getWarehouses, getWarehouse };
+const updateWarehouse = async (req, res, next) => {
+  try {
+    const { name, code, type, address } = req.body;
+    const { warehouseId } = req.params;
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res.status(404).json({
+        message: "Warehouse not found",
+      });
+    }
+    const normalizedCode = code.trim().toLowerCase();
+    const codeExists = await Warehouse.findOne({
+      code: normalizedCode,
+      _id: { $ne: warehouseId },
+    });
+    if (codeExists) {
+      return res.status(409).json({ message: "Warehouse code already exists" });
+    }
+    const updateWarehouse = await Warehouse.findByIdAndUpdate(
+      warehouseId,
+      { name, code: normalizedCode, type, address },
+      { new: true },
+    );
+    return res.status(200).json({
+      message: "Warehouse updated successfully",
+      warehouse: {
+        id: updateWarehouse._id,
+        name: updateWarehouse.name,
+        code: updateWarehouse.code,
+        type: updateWarehouse.type,
+        address: updateWarehouse.address,
+        status: updateWarehouse.status,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createWarehouse,
+  getWarehouses,
+  getWarehouse,
+  updateWarehouse,
+};
