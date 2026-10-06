@@ -6,6 +6,7 @@ const authorizationMiddleware = require("../middleware/authorizationMiddleware")
 
 const {
   createSupplierValidation,
+  updateSupplierValidation,
   validate,
 } = require("../middleware/validationMiddleware");
 
@@ -13,6 +14,7 @@ const {
   createSupplier,
   getSuppliers,
   getSupplier,
+  updateSupplier,
 } = require("../controllers/supplierController");
 
 router.post(
@@ -36,6 +38,15 @@ router.get(
   authMiddleware,
   authorizationMiddleware(["ADMIN"]),
   getSupplier,
+);
+
+router.put(
+  "/:supplierId",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN"]),
+  updateSupplierValidation,
+  validate,
+  updateSupplier,
 );
 
 module.exports = router;

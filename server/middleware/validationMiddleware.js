@@ -95,6 +95,22 @@ const createSupplierValidation = [
   body("address").trim().notEmpty().withMessage("Address is required"),
 ];
 
+const updateSupplierValidation = [
+  body("name").trim().notEmpty().withMessage("Name is required"),
+  body("contactPerson")
+    .trim()
+    .notEmpty()
+    .withMessage("ContactPerson is required"),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format"),
+  body("phone").trim().notEmpty().withMessage("Phone is required"),
+  body("address").trim().notEmpty().withMessage("Address is required"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -110,5 +126,6 @@ module.exports = {
   updateWarehouseValidation,
   updateWarehouseStatusValidation,
   createSupplierValidation,
+  updateSupplierValidation,
   validate,
 };
