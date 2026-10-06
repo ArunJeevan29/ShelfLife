@@ -10,6 +10,7 @@ const loggerMiddleware = require("./middleware/loggerMiddleware");
 
 const authRoutes = require("./routes/authRoutes");
 const warehouseRoutes = require("./routes/warehouseRoutes");
+const supplierRoutes = require("./routes/supplierRoutes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(loggerMiddleware);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/warehouses", warehouseRoutes);
+app.use("/api/suppliers", supplierRoutes);
 
 app.use(errorMiddleware);
 
