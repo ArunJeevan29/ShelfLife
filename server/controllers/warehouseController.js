@@ -96,9 +96,38 @@ const updateWarehouse = async (req, res, next) => {
   }
 };
 
+const updateWarehouseStatus = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const { warehouseId } = req.params;
+    const warehouse = await Warehouse.findByIdAndUpdate(
+      warehouseId,
+      { status },
+      { new: true },
+    );
+    if (!warehouse) {
+      return res.status(404).json({ message: "Warehouse not found" });
+    }
+    return res.status(200).json({
+      message: "Status changed successfully",
+      warehouse: {
+        id: warehouse._id,
+        name: warehouse.name,
+        code: warehouse.code,
+        type: warehouse.type,
+        address: warehouse.address,
+        status: warehouse.status,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createWarehouse,
   getWarehouses,
   getWarehouse,
   updateWarehouse,
+  updateWarehouseStatus,
 };

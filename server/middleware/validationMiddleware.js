@@ -70,6 +70,15 @@ const updateWarehouseValidation = [
   body("address").trim().notEmpty().withMessage("Address is required"),
 ];
 
+const updateWarehouseStatusValidation = [
+  body("status")
+    .trim()
+    .notEmpty()
+    .withMessage("Status is required")
+    .isIn(["ACTIVE", "INACTIVE"])
+    .withMessage("Invalid status"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -83,5 +92,6 @@ module.exports = {
   registerValidation,
   createWarehouseValidation,
   updateWarehouseValidation,
+  updateWarehouseStatusValidation,
   validate,
 };
