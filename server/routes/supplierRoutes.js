@@ -9,7 +9,10 @@ const {
   validate,
 } = require("../middleware/validationMiddleware");
 
-const { createSupplier } = require("../controllers/supplierController");
+const {
+  createSupplier,
+  getSuppliers,
+} = require("../controllers/supplierController");
 
 router.post(
   "/",
@@ -18,6 +21,13 @@ router.post(
   createSupplierValidation,
   validate,
   createSupplier,
+);
+
+router.get(
+  "/",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN"]),
+  getSuppliers,
 );
 
 module.exports = router;
