@@ -7,6 +7,7 @@ const authorizationMiddleware = require("../middleware/authorizationMiddleware")
 const {
   createCustomer,
   getCustomers,
+  getCustomer,
 } = require("../controllers/customerController");
 
 const {
@@ -28,6 +29,13 @@ router.get(
   authMiddleware,
   authorizationMiddleware(["ADMIN", "MANAGER", "STAFF"]),
   getCustomers,
+);
+
+router.get(
+  "/:customerId",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN", "MANAGER", "STAFF"]),
+  getCustomer,
 );
 
 module.exports = router;
