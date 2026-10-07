@@ -68,4 +68,57 @@ const getProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { createProduct, getProducts, getProduct };
+const updateProduct = async (req, res, next) => {
+  try {
+    const { name, sku, description, category, unit, supplier } = req.body;
+    const { productId } = req.params;
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    const normalizedSku = sku.trim().toUpperCase();
+    const skuExists = await Product.findOne({
+      sku: normalizedSku,
+      _id: { $ne: productId },
+    });
+    if (skuExists) {
+      return res.status(409).json({ message: "SKU already exists" });
+    }
+    const currentSupplier = await Supplier.findById(supplier);
+    if (!currentSupplier) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+    if (currentSupplier.status !== "ACTIVE") {
+      return res.status(400).json({ message: "Supplier not active" });
+    }
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        name,
+        sku: normalizedSku,
+        description,
+        category,
+        unit,
+        supplier,
+      },
+      { new: true },
+    );
+    return res.status(200).json({
+      message: "Product updated successfully",
+      product: {
+        id: updatedProduct._id,
+        name: updatedProduct.name,
+        sku: updatedProduct.sku,
+        description: updatedProduct.description,
+        category: updatedProduct.category,
+        unit: updatedProduct.unit,
+        supplier: updatedProduct.supplier,
+        status: updatedProduct.status,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createProduct, getProducts, getProduct, updateProduct };

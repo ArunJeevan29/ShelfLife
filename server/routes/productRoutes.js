@@ -8,10 +8,12 @@ const {
   createProduct,
   getProducts,
   getProduct,
+  updateProduct,
 } = require("../controllers/productController");
 
 const {
   createProductValidation,
+  updateProductValidation,
   validate,
 } = require("../middleware/validationMiddleware");
 
@@ -36,6 +38,15 @@ router.get(
   authMiddleware,
   authorizationMiddleware(["ADMIN", "MANAGER", "STAFF"]),
   getProduct,
+);
+
+router.put(
+  "/:productId",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN"]),
+  updateProductValidation,
+  validate,
+  updateProduct,
 );
 
 module.exports = router;
