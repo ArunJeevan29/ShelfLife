@@ -79,6 +79,47 @@ const updateWarehouseStatusValidation = [
     .withMessage("Invalid status"),
 ];
 
+const createSupplierValidation = [
+  body("name").trim().notEmpty().withMessage("Name is required"),
+  body("contactPerson")
+    .trim()
+    .notEmpty()
+    .withMessage("ContactPerson is required"),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format"),
+  body("phone").trim().notEmpty().withMessage("Phone is required"),
+  body("address").trim().notEmpty().withMessage("Address is required"),
+];
+
+const updateSupplierValidation = [
+  body("name").trim().notEmpty().withMessage("Name is required"),
+  body("contactPerson")
+    .trim()
+    .notEmpty()
+    .withMessage("ContactPerson is required"),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format"),
+  body("phone").trim().notEmpty().withMessage("Phone is required"),
+  body("address").trim().notEmpty().withMessage("Address is required"),
+];
+
+const updateSupplierStatusValidation = [
+  body("status")
+    .trim()
+    .notEmpty()
+    .withMessage("Status is required")
+    .isIn(["ACTIVE", "INACTIVE"])
+    .withMessage("Invalid status"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -93,5 +134,8 @@ module.exports = {
   createWarehouseValidation,
   updateWarehouseValidation,
   updateWarehouseStatusValidation,
+  createSupplierValidation,
+  updateSupplierValidation,
+  updateSupplierStatusValidation,
   validate,
 };
