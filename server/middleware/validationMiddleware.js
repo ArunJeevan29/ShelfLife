@@ -207,6 +207,15 @@ const updateCustomerValidation = [
   body("address").trim().notEmpty().withMessage("Address is required"),
 ];
 
+const updateCustomerStatusValidation = [
+  body("status")
+    .trim()
+    .notEmpty()
+    .withMessage("Status is required")
+    .isIn(["ACTIVE", "INACTIVE"])
+    .withMessage("Invalid status"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -229,5 +238,6 @@ module.exports = {
   updateProductStatusValidation,
   createCustomerValidation,
   updateCustomerValidation,
+  updateCustomerStatusValidation,
   validate,
 };
