@@ -32,4 +32,13 @@ const createCustomer = async (req, res, next) => {
   }
 };
 
-module.exports = { createCustomer };
+const getCustomers = async (req, res, next) => {
+  try {
+    const customers = await Customer.find();
+    return res.status(200).json({ customers });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createCustomer, getCustomers };
