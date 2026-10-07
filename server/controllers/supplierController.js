@@ -98,4 +98,41 @@ const updateSupplier = async (req, res, next) => {
   }
 };
 
-module.exports = { createSupplier, getSuppliers, getSupplier, updateSupplier };
+const updateSupplierStatus = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const { supplierId } = req.params;
+    const supplier = await Supplier.findByIdAndUpdate(
+      supplierId,
+      { status },
+      {
+        new: true,
+      },
+    );
+    if (!supplier) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+    return res.status(200).json({
+      message: "Supplier status changed successfully",
+      supplier: {
+        id: supplier._id,
+        name: supplier.name,
+        contactPerson: supplier.contactPerson,
+        email: supplier.email,
+        phone: supplier.phone,
+        address: supplier.address,
+        status: supplier.status,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createSupplier,
+  getSuppliers,
+  getSupplier,
+  updateSupplier,
+  updateSupplierStatus,
+};

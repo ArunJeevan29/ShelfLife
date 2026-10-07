@@ -111,6 +111,15 @@ const updateSupplierValidation = [
   body("address").trim().notEmpty().withMessage("Address is required"),
 ];
 
+const updateSupplierStatusValidation = [
+  body("status")
+    .trim()
+    .notEmpty()
+    .withMessage("Status is required")
+    .isIn(["ACTIVE", "INACTIVE"])
+    .withMessage("Invalid status"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -127,5 +136,6 @@ module.exports = {
   updateWarehouseStatusValidation,
   createSupplierValidation,
   updateSupplierValidation,
+  updateSupplierStatusValidation,
   validate,
 };
