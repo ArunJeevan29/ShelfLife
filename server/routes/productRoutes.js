@@ -9,11 +9,13 @@ const {
   getProducts,
   getProduct,
   updateProduct,
+  updateProductStatus,
 } = require("../controllers/productController");
 
 const {
   createProductValidation,
   updateProductValidation,
+  updateProductStatusValidation,
   validate,
 } = require("../middleware/validationMiddleware");
 
@@ -47,6 +49,15 @@ router.put(
   updateProductValidation,
   validate,
   updateProduct,
+);
+
+router.patch(
+  "/:productId/status",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN"]),
+  updateProductStatusValidation,
+  validate,
+  updateProductStatus,
 );
 
 module.exports = router;

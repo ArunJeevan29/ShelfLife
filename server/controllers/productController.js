@@ -121,4 +121,40 @@ const updateProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { createProduct, getProducts, getProduct, updateProduct };
+const updateProductStatus = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const { status } = req.body;
+    const product = await Product.findByIdAndUpdate(
+      productId,
+      { status },
+      { new: true },
+    );
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    return res.status(200).json({
+      message: "Product status updated successfully",
+      product: {
+        id: product._id,
+        name: product.name,
+        sku: product.sku,
+        description: product.description,
+        category: product.category,
+        unit: product.unit,
+        supplier: product.supplier,
+        status: product.status,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createProduct,
+  getProducts,
+  getProduct,
+  updateProduct,
+  updateProductStatus,
+};

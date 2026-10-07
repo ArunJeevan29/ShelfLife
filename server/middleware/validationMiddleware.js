@@ -166,6 +166,15 @@ const updateProductValidation = [
     .withMessage("Invalid Supplier"),
 ];
 
+const updateProductStatusValidation = [
+  body("status")
+    .trim()
+    .notEmpty()
+    .withMessage("Status is required")
+    .isIn(["ACTIVE", "INACTIVE"])
+    .withMessage("Invalid status"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -185,5 +194,6 @@ module.exports = {
   updateSupplierStatusValidation,
   createProductValidation,
   updateProductValidation,
+  updateProductStatusValidation,
   validate,
 };
