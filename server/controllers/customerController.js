@@ -54,4 +54,48 @@ const getCustomer = async (req, res, next) => {
   }
 };
 
-module.exports = { createCustomer, getCustomers, getCustomer };
+const updateCustomer = async (req, res, next) => {
+  try {
+    const { name, contactPerson, email, phone, address } = req.body;
+    const { customerId } = req.params;
+    const customer = await Customer.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+    const normalizedEmail = email.trim().toLowerCase();
+    const emailExists = await Customer.findOne({
+      email: normalizedEmail,
+      _id: { $ne: customerId },
+    });
+    if (emailExists) {
+      return res.status(409).json({ message: "Customer email already exists" });
+    }
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+      customerId,
+      {
+        name,
+        contactPerson,
+        email: normalizedEmail,
+        phone,
+        address,
+      },
+      { new: true },
+    );
+    return res.status(200).json({
+      message: "Customer updated successfully",
+      customer: {
+        id: updatedCustomer._id,
+        name: updatedCustomer.name,
+        contactPerson: updatedCustomer.contactPerson,
+        email: updatedCustomer.email,
+        phone: updatedCustomer.phone,
+        address: updatedCustomer.address,
+        status: updatedCustomer.status,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createCustomer, getCustomers, getCustomer, updateCustomer };

@@ -8,10 +8,12 @@ const {
   createCustomer,
   getCustomers,
   getCustomer,
+  updateCustomer,
 } = require("../controllers/customerController");
 
 const {
   createCustomerValidation,
+  updateCustomerValidation,
   validate,
 } = require("../middleware/validationMiddleware");
 
@@ -36,6 +38,15 @@ router.get(
   authMiddleware,
   authorizationMiddleware(["ADMIN", "MANAGER", "STAFF"]),
   getCustomer,
+);
+
+router.put(
+  "/:customerId",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN", "MANAGER"]),
+  updateCustomerValidation,
+  validate,
+  updateCustomer,
 );
 
 module.exports = router;
