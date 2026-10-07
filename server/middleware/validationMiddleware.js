@@ -120,6 +120,29 @@ const updateSupplierStatusValidation = [
     .withMessage("Invalid status"),
 ];
 
+const createProductValidation = [
+  body("name").trim().notEmpty().withMessage("Name is required"),
+  body("sku").trim().notEmpty().withMessage("SKU is required"),
+  body("description")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("Description cannot be empty"),
+  body("category").trim().notEmpty().withMessage("Category is required"),
+  body("unit")
+    .trim()
+    .notEmpty()
+    .withMessage("Unit is required")
+    .isIn(["PIECE", "BOX", "KG", "LITER"])
+    .withMessage("Invalid unit"),
+  body("supplier")
+    .trim()
+    .notEmpty()
+    .withMessage("Supplier is required")
+    .isMongoId()
+    .withMessage("Invalid Supplier"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -137,5 +160,6 @@ module.exports = {
   createSupplierValidation,
   updateSupplierValidation,
   updateSupplierStatusValidation,
+  createProductValidation,
   validate,
 };
