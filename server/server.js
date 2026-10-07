@@ -12,6 +12,7 @@ const authRoutes = require("./routes/authRoutes");
 const warehouseRoutes = require("./routes/warehouseRoutes");
 const supplierRoutes = require("./routes/supplierRoutes");
 const productRoutes = require("./routes/productRoutes");
+const customerRoutes = require("./routes/customerRoutes");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/warehouses", warehouseRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/customers", customerRoutes);
 
 app.use(errorMiddleware);
 
