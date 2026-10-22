@@ -216,6 +216,29 @@ const updateCustomerStatusValidation = [
     .withMessage("Invalid status"),
 ];
 
+const createBatchValidation = [
+  body("product")
+    .trim()
+    .notEmpty()
+    .withMessage("Product is required")
+    .isMongoId()
+    .withMessage("Invalid Product ID"),
+
+  body("batchNumber").trim().notEmpty().withMessage("Batch Number is required"),
+
+  body("manufacturingDate")
+    .notEmpty()
+    .withMessage("Manufacturing Date is required")
+    .isISO8601()
+    .withMessage("Invalid Manufacturing Date"),
+
+  body("expiryDate")
+    .notEmpty()
+    .withMessage("Expiry Date is required")
+    .isISO8601()
+    .withMessage("Invalid Expiry Date"),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -239,5 +262,6 @@ module.exports = {
   createCustomerValidation,
   updateCustomerValidation,
   updateCustomerStatusValidation,
+  createBatchValidation,
   validate,
 };
