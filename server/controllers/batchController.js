@@ -49,4 +49,16 @@ const createBatch = async (req, res, next) => {
   }
 };
 
-module.exports = { createBatch };
+const getBatches = async (req, res, next) => {
+  try {
+    const batches = await Batch.find().populate(
+      "product",
+      "name sku category unit status",
+    );
+    return res.status(200).json({ batches });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createBatch, getBatches };
