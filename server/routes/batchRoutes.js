@@ -4,7 +4,11 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const authorizationMiddleware = require("../middleware/authorizationMiddleware");
 
-const { createBatch, getBatches } = require("../controllers/batchController");
+const {
+  createBatch,
+  getBatches,
+  getBatch,
+} = require("../controllers/batchController");
 
 const {
   createBatchValidation,
@@ -25,6 +29,13 @@ router.get(
   authMiddleware,
   authorizationMiddleware(["ADMIN", "MANAGER", "STAFF"]),
   getBatches,
+);
+
+router.get(
+  "/:batchId",
+  authMiddleware,
+  authorizationMiddleware(["ADMIN", "MANAGER", "STAFF"]),
+  getBatch,
 );
 
 module.exports = router;

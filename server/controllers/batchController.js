@@ -61,4 +61,20 @@ const getBatches = async (req, res, next) => {
   }
 };
 
-module.exports = { createBatch, getBatches };
+const getBatch = async (req, res, next) => {
+  try {
+    const { batchId } = req.params;
+    const batch = await Batch.findById(batchId).populate(
+      "product",
+      "name sku category unit status",
+    );
+    if (!batch) {
+      return res.status(404).json({ message: "Batch not found" });
+    }
+    return res.status(200).json({ batch });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createBatch, getBatches, getBatch };
