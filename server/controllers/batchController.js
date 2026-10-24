@@ -77,4 +77,59 @@ const getBatch = async (req, res, next) => {
   }
 };
 
-module.exports = { createBatch, getBatches, getBatch };
+const updateBatch = async (req, res, next) => {
+  try {
+    const { product, batchNumber, manufacturingDate, expiryDate } = req.body;
+    const { batchId } = req.params;
+    const batch = await Batch.findById(batchId);
+    if (!batch) {
+      return res.status(404).json({ message: "Batch not found" });
+    }
+    const normalizedBatchNumber = batchNumber.trim().toUpperCase();
+    const batchNumberExists = await Batch.findOne({
+      batchNumber: normalizedBatchNumber,
+      _id: { $ne: batchId },
+    });
+    if (batchNumberExists) {
+      return res.status(409).json({ message: "Batch Number already exists" });
+    }
+    const currentProduct = await Product.findById(product);
+    if (!currentProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    if (currentProduct.status !== "ACTIVE") {
+      return res.status(400).json({ message: "Product is not active" });
+    }
+    const manufacturing = new Date(manufacturingDate);
+    const expiry = new Date(expiryDate);
+    if (expiry <= manufacturing) {
+      return res
+        .status(400)
+        .json({ message: "Expiry Date must be later than Manufacturing Date" });
+    }
+    const updatedBatch = await Batch.findByIdAndUpdate(
+      batchId,
+      {
+        product,
+        batchNumber: normalizedBatchNumber,
+        manufacturingDate: manufacturing,
+        expiryDate: expiry,
+      },
+      { new: true },
+    ).populate("product", "name sku category unit status");
+    return res.status(200).json({
+      message: "Batch Updated Successfully",
+      batch: {
+        id: updatedBatch._id,
+        product: updatedBatch.product,
+        batchNumber: updatedBatch.batchNumber,
+        manufacturingDate: updatedBatch.manufacturingDate,
+        expiryDate: updatedBatch.expiryDate,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createBatch, getBatches, getBatch, updateBatch };
