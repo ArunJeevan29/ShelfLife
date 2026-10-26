@@ -14,6 +14,7 @@ const supplierRoutes = require("./routes/supplierRoutes");
 const productRoutes = require("./routes/productRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const batchRoutes = require("./routes/batchRoutes");
+const inventoryRoutes = require("./routes/inventoryRoutes");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/batches", batchRoutes);
+app.use("/api/inventory", inventoryRoutes);
 
 app.use(errorMiddleware);
 

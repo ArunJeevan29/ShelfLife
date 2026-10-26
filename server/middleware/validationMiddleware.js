@@ -262,6 +262,33 @@ const updateBatchValidation = [
     .withMessage("Invalid Expiry Date"),
 ];
 
+const receiveStockValidation = [
+  body("batch")
+    .trim()
+    .notEmpty()
+    .withMessage("Batch is required")
+    .isMongoId()
+    .withMessage("Invalid Batch ID"),
+  body("supplier")
+    .trim()
+    .notEmpty()
+    .withMessage("Supplier is required")
+    .isMongoId()
+    .withMessage("Invalid Supplier ID"),
+  body("warehouse")
+    .trim()
+    .notEmpty()
+    .withMessage("Warehouse is required")
+    .isMongoId()
+    .withMessage("Invalid Warehouse ID"),
+  body("quantity")
+    .notEmpty()
+    .withMessage("Quantity is required")
+    .isInt({ min: 1 })
+    .withMessage("Quantity must be a positive integer")
+    .toInt(),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -287,5 +314,6 @@ module.exports = {
   updateCustomerStatusValidation,
   createBatchValidation,
   updateBatchValidation,
+  receiveStockValidation,
   validate,
 };
