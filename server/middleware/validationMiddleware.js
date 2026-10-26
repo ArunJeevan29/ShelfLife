@@ -216,6 +216,79 @@ const updateCustomerStatusValidation = [
     .withMessage("Invalid status"),
 ];
 
+const createBatchValidation = [
+  body("product")
+    .trim()
+    .notEmpty()
+    .withMessage("Product is required")
+    .isMongoId()
+    .withMessage("Invalid Product ID"),
+
+  body("batchNumber").trim().notEmpty().withMessage("Batch Number is required"),
+
+  body("manufacturingDate")
+    .notEmpty()
+    .withMessage("Manufacturing Date is required")
+    .isISO8601()
+    .withMessage("Invalid Manufacturing Date"),
+
+  body("expiryDate")
+    .notEmpty()
+    .withMessage("Expiry Date is required")
+    .isISO8601()
+    .withMessage("Invalid Expiry Date"),
+];
+
+const updateBatchValidation = [
+  body("product")
+    .trim()
+    .notEmpty()
+    .withMessage("Product is required")
+    .isMongoId()
+    .withMessage("Invalid Product ID"),
+
+  body("batchNumber").trim().notEmpty().withMessage("Batch Number is required"),
+
+  body("manufacturingDate")
+    .notEmpty()
+    .withMessage("Manufacturing Date is required")
+    .isISO8601()
+    .withMessage("Invalid Manufacturing Date"),
+
+  body("expiryDate")
+    .notEmpty()
+    .withMessage("Expiry Date is required")
+    .isISO8601()
+    .withMessage("Invalid Expiry Date"),
+];
+
+const receiveStockValidation = [
+  body("batch")
+    .trim()
+    .notEmpty()
+    .withMessage("Batch is required")
+    .isMongoId()
+    .withMessage("Invalid Batch ID"),
+  body("supplier")
+    .trim()
+    .notEmpty()
+    .withMessage("Supplier is required")
+    .isMongoId()
+    .withMessage("Invalid Supplier ID"),
+  body("warehouse")
+    .trim()
+    .notEmpty()
+    .withMessage("Warehouse is required")
+    .isMongoId()
+    .withMessage("Invalid Warehouse ID"),
+  body("quantity")
+    .notEmpty()
+    .withMessage("Quantity is required")
+    .isInt({ min: 1 })
+    .withMessage("Quantity must be a positive integer")
+    .toInt(),
+];
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -239,5 +312,8 @@ module.exports = {
   createCustomerValidation,
   updateCustomerValidation,
   updateCustomerStatusValidation,
+  createBatchValidation,
+  updateBatchValidation,
+  receiveStockValidation,
   validate,
 };
